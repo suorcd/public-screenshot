@@ -3,8 +3,8 @@
 DATE=$(date +'%Y%m%d%H%M%S')
 FIL="$(echo "${DATE}${RANDOM}" | sha256sum - | awk '{print $1}').png"
 SSHSRV="gaz"
-SRV="files.isntall.us"
-RFIL="/srv/isntall/srv/$SRV/$FIL"
+SRV="files.example"
+RFIL="/srv/example/srv/$SRV/$FIL"
 FILEURL="https://$SRV/$FIL"
 RFIL="/srv/${SRV}/${FIL}"
 FILEURL="https://${SRV}/${FIL}"
