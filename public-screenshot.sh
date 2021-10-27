@@ -1,11 +1,39 @@
 #!/bin/bash
 
+DATE=$(date +%s)
+FIL_NAME=($(echo "${DATE}${RANDOM}" | sha256sum))
+FIL_EXTENSION='png'
+FIL=${FIL_NAME}.${FIL_EXTENSION}
 
 source ./public-screenshot.env
 
+SCREENSHOTCMD=''
+case $DESKTOP_SESSION in
+  'plasmawayland')
+    SCREENSHOTCMD='spectacle -b --output='
+    COPYCMD='wl-copy'
+    ;;
+  'plasmaX')
+    SCREENSHOTCMD='spectacle -b --output='
+    COPYCMD='xsel -i'
+    ;;
+  'gnomewayland')
+    SCREENSHOTCMD='gnome-screenshot --file='
+    COPYCMD='xsel -i'
+    ;;
+  'gnomewayX')
+    SCREENSHOTCMD='gnome-screenshot --file='
+    COPYCMD='wl-copy'
+    ;;    
+  *)
+    exit 255
+    ;;
+esac
 
-cd "${HOME}/Pictures" || ( echo -n "Couldn't 'cd' into ~/Pictures" | xclip -selection c && exit 1 )
-gnome-screenshot --file="${FIL}"
+cd ${LOCALPATH} || ( echo -n "Couldn't 'cd' into ${LOCALPATH}" | ${COPYCMD} && exit 1 )
+${SCREENSHOTCMD}${LOCALPATH}/${FIL}
 
-rsync "${HOME}/Pictures/${FIL}" ${SSHSRV}:"${RFIL}" || ( echo -n "Rsync failed!!" | xclip -selection c && exit 1 )
-echo -n "${FILEURL}" | xclip -selection c
+rsync "${LOCALPATH}/${FIL}" ${SSHSRV}:"${REMOTEFILE}" || ( echo -n "Rsync failed!!" | ${COPYCMD} && exit 1 )
+echo -n "${FILEURL}" | ${COPYCMD}
+
+exit 0
