@@ -13,3 +13,10 @@ This relies on many other things to be setup.
 * hosting the files on something like a VPS
 
 I created and used from Gnome, so these scripts are specific
+
+
+
+
+TODO:
+  wayland clipboard
+  refactor
