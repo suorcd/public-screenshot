@@ -20,6 +20,6 @@ TODO:
 * required packages
 * refactor
 * test on:
- * kde X
- * Gnome Wayland
- * Gnome X
+  * kde X
+  * Gnome Wayland
+  * Gnome X
