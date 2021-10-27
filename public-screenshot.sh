@@ -23,11 +23,12 @@ case $DESKTOP_SESSION in
     ;;
   'gnomewayland')
     SCREENSHOTCMD='gnome-screenshot -f'
-    COPYCMD='xsel -i'
+    COPYCMD='wl-copy'
     ;;
   'gnomewayX')
     SCREENSHOTCMD='gnome-screenshot -f'
-    COPYCMD='wl-copy'
+    COPYCMD='xsel -i'
+
     ;;
   *)
     exit 255
