@@ -28,7 +28,7 @@ case $DESKTOP_SESSION in
   'gnomewayX')
     SCREENSHOTCMD='gnome-screenshot --file='
     COPYCMD='wl-copy'
-    ;;    
+    ;;
   *)
     exit 255
     ;;
