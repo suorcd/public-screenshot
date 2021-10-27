@@ -3,14 +3,18 @@
 DATE=$(date +%s)
 FIL_NAME=($(echo "${DATE}${RANDOM}" | sha256sum))
 FIL_EXTENSION='png'
-FIL=${FIL_NAME}.${FIL_EXTENSION}
+FIL=${FIL_NAME:0}.${FIL_EXTENSION}
 
 source ./public-screenshot.env
 
+REMOTEFILE="${REMOTEPATH}/${FIL}"
+FILEURL="https://${SRV}${SRVPATH}/${FIL}"
+
 SCREENSHOTCMD=''
+COPYCMD=''
 case $DESKTOP_SESSION in
   'plasmawayland')
-    SCREENSHOTCMD='spectacle -b --output='
+    SCREENSHOTCMD='spectacle -b -n --output='
     COPYCMD='wl-copy'
     ;;
   'plasmaX')
@@ -30,8 +34,8 @@ case $DESKTOP_SESSION in
     ;;
 esac
 
-cd ${LOCALPATH} || ( echo -n "Couldn't 'cd' into ${LOCALPATH}" | ${COPYCMD} && exit 1 )
-${SCREENSHOTCMD}${LOCALPATH}/${FIL}
+cd "${LOCALPATH}" || ( echo -n "Couldn't 'cd' into ${LOCALPATH}" | ${COPYCMD} && exit 1 )
+"${SCREENSHOTCMD}""${LOCALPATH}"/"${FIL}"
 
 rsync "${LOCALPATH}/${FIL}" ${SSHSRV}:"${REMOTEFILE}" || ( echo -n "Rsync failed!!" | ${COPYCMD} && exit 1 )
 echo -n "${FILEURL}" | ${COPYCMD}
