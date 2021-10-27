@@ -1,11 +1,12 @@
 #!/bin/bash
 
 DATE=$(date +%s)
-FIL_NAME=($(echo "${DATE}${RANDOM}" | sha256sum))
+FIL_NAME="$(echo "${DATE}${RANDOM}" | sha256sum | (read -ra FILAR; echo "${FILAR[0]}" ))"
 FIL_EXTENSION='png'
-FIL=${FIL_NAME:0}.${FIL_EXTENSION}
+FIL=${FIL_NAME}.${FIL_EXTENSION}
 
-source ./public-screenshot.env
+# shellcheck source=./public-screenshot.env
+. ./public-screenshot.env
 
 REMOTEFILE="${REMOTEPATH}/${FIL}"
 FILEURL="https://${SRV}${SRVPATH}/${FIL}"
@@ -38,7 +39,7 @@ cd "${LOCALPATH}" || ( echo -n "Couldn't 'cd' into ${LOCALPATH}" | ${COPYCMD} &&
 ${SCREENSHOTCMD} "${LOCALPATH}/${FIL}"
 
 # mc - minio client
-${HOME}/bin/mc cp "${HOME}/Pictures/${FIL}" "${MCSRV}/${RFIL}" || ( echo -n "mc failed!!" | ${COPYCMD} && exit 1 )
+mc cp "${LOCALPATH}/${FIL}" "${MCSRV}/${REMOTEFILE}" || ( echo -n "mc failed!!" | ${COPYCMD} && exit 1 )
 echo -n "${FILEURL}" | ${COPYCMD}
 
 exit 0
