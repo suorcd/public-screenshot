@@ -14,11 +14,11 @@ SCREENSHOTCMD=''
 COPYCMD=''
 case $DESKTOP_SESSION in
   'plasmawayland')
-    SCREENSHOTCMD='spectacle -b -n --output='
+    SCREENSHOTCMD='spectacle -b -n --output '
     COPYCMD='wl-copy'
     ;;
   'plasmaX')
-    SCREENSHOTCMD='spectacle -b --output='
+    SCREENSHOTCMD='spectacle -b --output '
     COPYCMD='xsel -i'
     ;;
   'gnomewayland')
@@ -35,7 +35,7 @@ case $DESKTOP_SESSION in
 esac
 
 cd "${LOCALPATH}" || ( echo -n "Couldn't 'cd' into ${LOCALPATH}" | ${COPYCMD} && exit 1 )
-"${SCREENSHOTCMD}""${LOCALPATH}"/"${FIL}"
+${SCREENSHOTCMD} "${LOCALPATH}/${FIL}"
 
 rsync "${LOCALPATH}/${FIL}" ${SSHSRV}:"${REMOTEFILE}" || ( echo -n "Rsync failed!!" | ${COPYCMD} && exit 1 )
 echo -n "${FILEURL}" | ${COPYCMD}
