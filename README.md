@@ -12,11 +12,14 @@ This relies on many other things to be setup.
 * Connection to the server is provided bye ssh, minio client, etc.
 * hosting the files on something like a VPS
 
-I created and used from Gnome, so these scripts are specific
 
 
 
 
 TODO:
-  required packages
-  refactor
+* required packages
+* refactor
+* test on:
+** kde X
+** Gnome Wayland
+** Gnome X
