@@ -14,19 +14,19 @@ SCREENSHOTCMD=''
 COPYCMD=''
 case $DESKTOP_SESSION in
   'plasmawayland')
-    SCREENSHOTCMD='spectacle -b -n --output '
+    SCREENSHOTCMD='spectacle -b -n -o'
     COPYCMD='wl-copy'
     ;;
   'plasmaX')
-    SCREENSHOTCMD='spectacle -b --output '
+    SCREENSHOTCMD='spectacle -b -n -o'
     COPYCMD='xsel -i'
     ;;
   'gnomewayland')
-    SCREENSHOTCMD='gnome-screenshot --file='
+    SCREENSHOTCMD='gnome-screenshot -f'
     COPYCMD='xsel -i'
     ;;
   'gnomewayX')
-    SCREENSHOTCMD='gnome-screenshot --file='
+    SCREENSHOTCMD='gnome-screenshot -f'
     COPYCMD='wl-copy'
     ;;
   *)
