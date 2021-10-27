@@ -1,16 +1,44 @@
 #!/bin/bash
 
-DATE=$(date +'%Y%m%d%H%M%S')
-FIL="$(echo "${DATE}${RANDOM}" | sha256sum - | awk '{print $1}').png"
-SSHSRV="gaz"
-SRV="files.example.com"
-RFIL="/srv/example/srv/$SRV/$FIL"
-FILEURL="https://$SRV/$FIL"
-RFIL="/srv/${SRV}/${FIL}"
-FILEURL="https://${SRV}/${FIL}"
+DATE=$(date +%s)
+FIL_NAME="$(echo "${DATE}${RANDOM}" | sha256sum | (read -ra FILAR; echo "${FILAR[0]}" ))"
+FIL_EXTENSION='png'
+FIL=${FIL_NAME}.${FIL_EXTENSION}
 
-cd "${HOME}/Pictures" || ( echo -n "Couldn't 'cd' into ~/Pictures" | xclip -selection c && exit 1 )
-gnome-screenshot --file="${FIL}"
+# shellcheck source=./public-screenshot.env
+. ./public-screenshot.env
 
-rsync "${HOME}/Pictures/${FIL}" ${SSHSRV}:"${RFIL}" || ( echo -n "Rsync failed!!" | xclip -selection c && exit 1 )
-echo -n "${FILEURL}" | xclip -selection c
+REMOTEFILE="${REMOTEPATH}/${FIL}"
+FILEURL="https://${SRV}${SRVPATH}/${FIL}"
+
+SCREENSHOTCMD=''
+COPYCMD=''
+case $DESKTOP_SESSION in
+  'plasmawayland')
+    SCREENSHOTCMD='spectacle -b -n -o'
+    COPYCMD='wl-copy'
+    ;;
+  'plasmaX')
+    SCREENSHOTCMD='spectacle -b -n -o'
+    COPYCMD='xsel -i'
+    ;;
+  'gnomewayland')
+    SCREENSHOTCMD='gnome-screenshot -f'
+    COPYCMD='wl-copy'
+    ;;
+  'gnomewayX')
+    SCREENSHOTCMD='gnome-screenshot -f'
+    COPYCMD='xsel -i'
+    ;;
+  *)
+    exit 255
+    ;;
+esac
+
+cd "${LOCALPATH}" || ( echo -n "Couldn't 'cd' into ${LOCALPATH}" | ${COPYCMD} && exit 1 )
+${SCREENSHOTCMD} "${LOCALPATH}/${FIL}"
+
+rsync "${LOCALPATH}/${FIL}" "${SSHSRV}":"${REMOTEFILE}" || ( echo -n "Rsync failed!!" | ${COPYCMD} && exit 1 )
+echo -n "${FILEURL}" | ${COPYCMD}
+
+exit 0
