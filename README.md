@@ -18,5 +18,5 @@ I created and used from Gnome, so these scripts are specific
 
 
 TODO:
-  wayland clipboard
+  required packages
   refactor
