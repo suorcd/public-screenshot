@@ -22,7 +22,7 @@ case $DESKTOP_SESSION in
     SCREENSHOTCMD='spectacle -b -n -r -o'
     COPYCMD='xsel -i'
     ;;
-  'gnomewayland')
+  'gnome')
     SCREENSHOTCMD='gnome-screenshot -a -f'
     COPYCMD='wl-copy'
     ;;
