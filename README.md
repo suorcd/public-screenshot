@@ -21,5 +21,4 @@ TODO:
 * refactor
 * test on:
   * kde X
-  * Gnome Wayland
   * Gnome X
