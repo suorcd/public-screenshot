@@ -25,6 +25,7 @@ case $DESKTOP_SESSION in
   'gnome')
     SCREENSHOTCMD='gnome-screenshot -f'
     COPYCMD='wl-copy'
+    DENOTIFY="notify-send --expire-time=10000 --app-name=public-screenshot-area.sh New_Screenshot"
     ;;
   'gnomewayX')
     SCREENSHOTCMD='gnome-screenshot -f'
@@ -40,5 +41,6 @@ ${SCREENSHOTCMD} "${LOCALPATH}/${FIL}"
 
 rsync "${LOCALPATH}/${FIL}" "${SSHSRV}":"${REMOTEFILE}" || ( echo -n "Rsync failed!!" | ${COPYCMD} && exit 1 )
 echo -n "${FILEURL}" | ${COPYCMD}
+[[ ${DENOTIFY:-} ]] && ${DENOTIFY} "${FILEURL}"
 
 exit 0
