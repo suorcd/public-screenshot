@@ -1,9 +1,12 @@
 #!/bin/bash
 
 DATE=$(date +%s)
-FIL_NAME="$(echo "${DATE}${RANDOM}" | sha256sum | (read -ra FILAR; echo "${FILAR[0]}" ))"
+fil_name="$(echo "${DATE}${RANDOM}" | sha256sum | (
+	read -ra fil_ar
+	echo "${fil_ar[0]}"
+))"
 FIL_EXTENSION='png'
-FIL=${FIL_NAME}.${FIL_EXTENSION}
+FIL="${fil_name}.${FIL_EXTENSION}"
 
 # shellcheck source=./public-screenshot.env
 . ./public-screenshot.env
@@ -11,35 +14,22 @@ FIL=${FIL_NAME}.${FIL_EXTENSION}
 REMOTEFILE="${REMOTEPATH}/${FIL}"
 FILEURL="https://${SRV}${SRVPATH}/${FIL}"
 
-SCREENSHOTCMD=''
-COPYCMD=''
-case $DESKTOP_SESSION in
-  'plasmawayland')
-    SCREENSHOTCMD='spectacle -b -n -o'
-    COPYCMD='wl-copy'
-    ;;
-  'plasmaX')
-    SCREENSHOTCMD='spectacle -b -n -o'
-    COPYCMD='xsel -i'
-    ;;
-  'gnome')
-    SCREENSHOTCMD='gnome-screenshot -f'
-    COPYCMD='wl-copy'
-    DENOTIFY="notify-send --expire-time=10000 --app-name=public-screenshot-area.sh New_Screenshot"
-    ;;
-  'gnomewayX')
-    SCREENSHOTCMD='gnome-screenshot -f'
-    COPYCMD='xsel -i'
-    ;;
-  *)
-    exit 255
-    ;;
+case $XDG_SESSION_TYPE in
+'wayland')
+	COPYCMD='wl-copy'
+	;;
+'x11')
+	COPYCMD='xsel -i'
+	;;
+*)
+	exit 255
+	;;
 esac
 
-cd "${LOCALPATH}" || ( echo -n "Couldn't 'cd' into ${LOCALPATH}" | ${COPYCMD} && exit 1 )
-${SCREENSHOTCMD} "${LOCALPATH}/${FIL}"
+cd "${LOCALPATH}" || (echo -n "Couldn't 'cd' into ${LOCALPATH}" | ${COPYCMD} && exit 1)
+flameshot screen -p "${LOCALPATH}"
 
-rsync "${LOCALPATH}/${FIL}" "${SSHSRV}":"${REMOTEFILE}" || ( echo -n "Rsync failed!!" | ${COPYCMD} && exit 1 )
+rsync "${LOCALPATH}/${FIL}" "${SSHSRV}":"${REMOTEFILE}" || (echo -n "Rsync failed!!" | ${COPYCMD} && exit 1)
 echo -n "${FILEURL}" | ${COPYCMD}
 [[ ${DENOTIFY:-} ]] && ${DENOTIFY} "${FILEURL}"
 
